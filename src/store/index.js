@@ -5,6 +5,7 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 const state = {
+  myStreet: {short_address: "未选择地址"},
   myCity: [],
   obj: [],
   response: null,

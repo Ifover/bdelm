@@ -19,6 +19,10 @@ module.exports = {
       '/restapi/v2': {
         target: 'https://www.ele.me/',//接口域名
         changeOrigin: true,//是否跨域
+      },
+      '/restapi': {
+        target: 'https://h5.ele.me/',//接口域名
+        changeOrigin: true,//是否跨域
       }
     },
 

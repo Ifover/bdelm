@@ -1,7 +1,21 @@
 <template>
   <div id="restaurants">
-    <ul v-for="v in restaurantsList">
-      <li>
+    <h1 v-if="restaurantsList.length==0">没有</h1>
+    <!--<ul v-else v-for="v in restaurantsList">-->
+    <!--<li>-->
+    <!--<img :src="computePic(v.image_path)">-->
+    <!--{{v.name}}-->
+    <!--<p>{{v.rating}} 月售:{{v.recent_order_num}}</p>-->
+    <!--<p>起送 ¥{{v.float_minimum_order_amount}}| 配送 ¥{{v.float_delivery_fee}}</p>-->
+    <!--<p>{{v.flavors[0].name}}</p>-->
+    <!--<p v-if="v.activities[1]">满减 {{v.activities[1].tips}}</p>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <ul
+      infinite-scroll-disabled="loading"
+      infinite-scroll-distance="10"
+      v-else>
+      <li v-for="v in restaurantsList">
         <img :src="computePic(v.image_path)">
         {{v.name}}
         <p>{{v.rating}} 月售:{{v.recent_order_num}}</p>
@@ -14,6 +28,7 @@
 </template>
 
 <script>
+  import { Loadmore } from 'mint-ui';
   export default {
     name: "restaurants",
     data() {
@@ -39,14 +54,15 @@
         return realPic
       },
       getRestaurants() {
+        console.log(this.$store.state.myStreet);
         this.$store.state.obj = {
           url: '/restapi/shopping/restaurants',
           params: {
             'extras[]': 'activities',
-            geohash: this.$route.params.geohash,
-            latitude: this.$route.params.latitude,
+            geohash: this.$store.state.myStreet.geohash,
+            latitude: this.$store.state.myStreet.latitude,
             limit: 30,
-            longitude: this.$route.params.longitude,
+            longitude: this.$store.state.myStreet.longitude,
             offset: 0,
             terminal: 'web'
           }
@@ -58,8 +74,11 @@
 
     },
     mounted() {
-      this.show();
-      this.getRestaurants();
+      if (this.$store.state.myStreet.short_address != '未选择地址') {
+        //this.show();
+        this.getRestaurants();
+      }
+
     }
   }
 </script>
