@@ -28,7 +28,8 @@
 </template>
 
 <script>
-  import { Loadmore } from 'mint-ui';
+
+
   export default {
     name: "restaurants",
     data() {

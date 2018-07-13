@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import {getStorage} from '@/config/Utils.js'
   import { Toast } from 'mint-ui';
   export default {
     name: "home",
@@ -47,6 +48,7 @@
       //     _this.$router.push({path: '/shouhuo'})
       //   }
       // }, 2000);
+      getStorage('name')
 
       //上面这块的意思就是先判断仓库中myStreet中是否是未设置地址,
       //如果未设置则跳转到设置页面.并且是在最后的这个xxx毫秒之后跳转
