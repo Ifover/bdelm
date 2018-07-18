@@ -5,8 +5,8 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 const state = {
-  myStreet: {short_address: "未选择地址"},
-  myCity: [],
+  myStreet: null,
+  myCity: null,
   obj: [],
   response: null,
   error: null
@@ -35,10 +35,11 @@ const actions = {
   getMyCity(context) {
     state.obj = {
       url: '/restapi/shopping/v1/cities/guess',
-      params: {type: 'guess'}
+      // params: {type: 'guess'}
     }
     context.dispatch('getAjax').then(response => {
-      state.myCity = response.data;
+
+      context.state.myCity = response.data;
     })
   }
 }

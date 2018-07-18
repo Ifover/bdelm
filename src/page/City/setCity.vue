@@ -6,20 +6,36 @@
 */
 <template>
   <div id="setCity">
-    <span>猜你在 {{this.$store.state.myCity.name}}</span>
-    <ul>
-      <li class="liebiao" v-for="(v,k) in Citys">
-        <div class="paixu">{{k}}</div>
-        <ul>
-          <template v-for="(x,y) in v">
-            <a @click="showCityInfo(k,y)">
-              <li class="dizhi" v-if="x.name.length<5">{{x.name}}</li>
-              <li class="dizhi" v-else>{{x.name.substring(0,4)}}...</li>
-            </a>
-          </template>
-        </ul>
-      </li>
-    </ul>
+    <mt-header fixed title="选择你的城市">
+      <!--<mt-header fixed  v-else title="strer.short_address▽">-->
+      <router-link to="/" slot="left">
+        <mt-button icon="back">返回</mt-button>
+      </router-link>
+      <mt-button icon="more" slot="right"></mt-button>
+    </mt-header>
+    <!--<span>猜你在<a href="/"> {{this.$store.state.myCity.name}} </a></span>-->
+    <!--<ul>-->
+    <!--<li class="liebiao" v-for="(v,k) in Citys">-->
+    <!--<div class="paixu">{{k}}</div>-->
+    <!--<ul>-->
+    <!--<template v-for="(x,y) in v">-->
+    <!--<a @click="showCityInfo(k,y)">-->
+    <!--<li class="dizhi" v-if="x.name.length<5">{{x.name}}</li>-->
+    <!--<li class="dizhi" v-else>{{x.name.substring(0,4)}}...</li>-->
+    <!--</a>-->
+    <!--</template>-->
+    <!--</ul>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <mt-index-list>
+      <mt-index-section  index="#" >
+        <mt-cell :title="this.$store.state.myCity.name" ></mt-cell>
+      </mt-index-section>
+      <mt-index-section v-for="(v,k) in Citys" :index="k" :key="k">
+        <mt-cell v-for="(x,y) in v" :title="x.name" :key="y"></mt-cell>
+      </mt-index-section>
+
+    </mt-index-list>
   </div>
 </template>
 
@@ -34,20 +50,21 @@
         title: 'ABCDEFGHGKLMNPQRSTVWXYZ'
       }
     },
-  /**
-   * home.vue和serCity.vue统一说明(城市的获取)
-   * 首先home显示会所在城市 以$store.state.myCity.name是否为空做判断,
-   * 如果为空则首次运行获取当前城市.
-   * 否则说明在setCity.vue里获取过用户设置的城市,或者在别的页面返回home.vue时不再获取所在城市(后半句待研究)
-   * serCity中打开将立即获取当前城市,以此覆盖$store.state.myCity来刷新系统的猜测城市
-   *
-   * 考虑到vuex刷新会导致数据全部重置,可以考虑用那个方法 对就是那个 s什么的
-   */
-  methods: {
+    /**
+     * home.vue和serCity.vue统一说明(城市的获取)
+     * 首先home显示会所在城市 以$store.state.myCity.name是否为空做判断,
+     * 如果为空则首次运行获取当前城市.
+     * 否则说明在setCity.vue里获取过用户设置的城市,或者在别的页面返回home.vue时不再获取所在城市(后半句待研究)
+     * serCity中打开将立即获取当前城市,以此覆盖$store.state.myCity来刷新系统的猜测城市
+     *
+     * 考虑到vuex刷新会导致数据全部重置,可以考虑用那个方法 对就是那个 s什么的
+     */
+    methods: {
       showCityInfo(x, y) {
         this.$store.state.myCity = this.Citys[x][y];
         this.$router.push({path: '/'})
-      }
+      },
+
     },
     mounted() {
       this.$store.dispatch('getMyCity'); //获取所在城市
@@ -56,7 +73,7 @@
           url: '/restapi/shopping/v1/cities',
         }
         this.$store.dispatch('getAjax').then(response => {
-          this.Citys = response.data
+          this.Citys = response.data;
         });
       }
     }
@@ -64,6 +81,10 @@
 </script>
 
 <style scoped>
+  h1 {
+    font-size: 66px;
+  }
+
   .paixu {
     /*color: #666;*/
     font-weight: 400;

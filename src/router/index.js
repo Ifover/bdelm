@@ -8,12 +8,13 @@ import Home from '@/page/Home/Home'
 import Header from '@/page/Header/Header'
 import setCity from '@/page/City/setCity'
 import getStreet from '@/page/Street/getStreet'
+import setStreet from '@/page/Street/setStreet'
+
 import Restaurants from '@/page/Other/Restaurants'
 
 //需要改名字
 import FenLei from '@/page/Other/FenLei'
 import TuiJian from '@/page/Other/TuiJian'
-import ShouHuo from '@/page/City/ShouHuo'
 Vue.use(Router)
 
 export default new Router({
@@ -29,7 +30,7 @@ export default new Router({
     },
     // {path: '/', name: 'Home', component: Home},
     {path: '/setCity', component: setCity},
-    {path: '/shouhuo', component: ShouHuo},
+    {path: '/setStreet', component: setStreet},
     {path: '/getStreet/:street', component: getStreet}
     // {path: '/restaurants/:geohash&:latitude&:longitude', component: Restaurants}
   ]
