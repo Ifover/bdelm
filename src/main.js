@@ -9,12 +9,13 @@ import lodash from 'lodash'
 import {
   Toast,
   Header,
-  Button, Swipe, SwipeItem, Tabbar, TabItem,IndexList, IndexSection,Cell,InfiniteScroll
+  Button, Swipe, SwipeItem, Tabbar, TabItem,IndexList, IndexSection,Cell,InfiniteScroll,Search
 } from 'mint-ui'
-
 Vue.use(lodash)
 //Vue.use(MintUI)
 //Vue.component(Toast);
+
+Vue.component(Search.name, Search);
 Vue.component(Header.name, Header);
 Vue.component(Button.name, Button);
 Vue.component(Swipe.name, Swipe);

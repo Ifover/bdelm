@@ -2,8 +2,6 @@
   <div id="app">
     <!--<router-link to="/">Home</router-link>-->
     <router-view/>
-    <router-view name="fenlei"></router-view>
-    <router-view name="tuijian"></router-view>
     <mt-tabbar fixed class="sdsd">
       <mt-tab-item id="外卖">
         <img slot="icon">
@@ -22,7 +20,7 @@
         我的
       </mt-tab-item>
     </mt-tabbar>
-    <div class="bottoner"></div>
+    <!--<div class="bottoner"></div>-->
   </div>
 </template>
 
@@ -39,7 +37,7 @@
       //this.getStreet();
       //console.log(this.$store.state.myCity);
 
-      if (!this.$store.state.myStreet && !getStorage('myStreet') && this.$route.path != '/setStreet') {
+      if (!this.$store.state.myStreet && !getStorage('myStreet') && this.$route.path == '/') {
         //console.log('---未设置街道信息---');
         let instance = Toast('未选择地址，2秒钟后跳转');
 
@@ -114,9 +112,9 @@
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
+    //text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
+    //margin-top: 40px;
 
   }
 </style>

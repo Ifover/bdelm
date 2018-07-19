@@ -75,7 +75,6 @@
         //console.log(this.$route.params);
       },
       loadMore() {
-        //console.log(1);
         this.loading = true;
         let tempStreet = getStorage('myStreet');
         //console.log(tempStreet);
@@ -117,6 +116,7 @@
         this.loading = false;
       },
       getRestaurants() {
+
         //console.log(this.$store.state.myStreet);
         let tempStreet = getStorage('myStreet');
         //console.log(tempStreet);

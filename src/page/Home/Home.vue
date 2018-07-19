@@ -8,7 +8,13 @@
       </router-link>
       <mt-button icon="more" slot="right" @click="clear"></mt-button>
     </mt-header>
-
+    <router-view/>
+    <keep-alive>
+      <fen-lei></fen-lei>
+    </keep-alive>
+    <restaurants></restaurants>
+    <!--<router-view name="fenlei"></router-view>-->
+    <!--<router-view name="tuijian"></router-view>-->
     <!--<div id="header">-->
     <!--&lt;!&ndash;<a href="/"><span>HOME</span></a>&ndash;&gt;-->
 
@@ -28,9 +34,14 @@
   import {setStorage, getStorage, removeStorage} from '@/config/Utils.js'
   import {MessageBox} from 'mint-ui';
   //import {Tabbar, TabItem} from 'mint-ui';
+  import FenLei from '@/page/Other/FenLei'
+  import Restaurants from '@/page/Other/Restaurants'
 
   export default {
     name: "home",
+    components: {
+      FenLei, Restaurants
+    },
     data() {
       return {
         shopName: "",
@@ -76,7 +87,7 @@
       //-------------------------------------
       let myStreet = getStorage('myStreet')
       //console.log(myStreet);
-      if (!myStreet) {
+      if (!myStreet ) {
         //this.$store.state.myStreet = myStreet;
         //console.log(12);
         this.title = {short_address: "未选择地址"}; //short_address . == "未选择地址"
@@ -93,8 +104,6 @@
 </script>
 
 <style scoped>
-
-
   .mint-field {
     width: 90%;
     line-height: 20px;

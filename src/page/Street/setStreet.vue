@@ -7,7 +7,7 @@
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>
     <div id="hhh">
-      <a href="#/setCity">
+      <a href="#/cityset">
         <span>{{this.myCity.name}}▽</span>
       </a>
       <input type="text" v-model="address" placeholder="请输入地址">

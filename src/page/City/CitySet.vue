@@ -6,12 +6,23 @@
 */
 <template>
   <div id="setCity">
+    <!--<mt-search cancel-text="取消" autofocus show>-->
+    <!--<mt-cell-->
+    <!--v-if="result"-->
+    <!--v-for="(item,index ) in result"-->
+    <!--:title="item.title"-->
+    <!--:value="item.value"-->
+    <!--:key="index">-->
+    <!--</mt-cell>-->
+    <!--</mt-search>-->
     <mt-header fixed title="选择你的城市">
       <!--<mt-header fixed  v-else title="strer.short_address▽">-->
       <router-link to="/" slot="left">
         <mt-button icon="back">返回</mt-button>
       </router-link>
-      <mt-button icon="more" slot="right"></mt-button>
+      <router-link to="/citysearch" slot="right">
+        <mt-button>搜索</mt-button>
+      </router-link>
     </mt-header>
     <!--<span>猜你在<a href="/"> {{this.$store.state.myCity.name}} </a></span>-->
     <!--<ul>-->
@@ -27,27 +38,34 @@
     <!--</ul>-->
     <!--</li>-->
     <!--</ul>-->
+
     <mt-index-list>
-      <mt-index-section  index="#" >
-        <mt-cell :title="this.$store.state.myCity.name" ></mt-cell>
-      </mt-index-section>
+      <!--<mt-index-section  index="#" >-->
+      <!--<mt-cell :title="this.$store.state.myCity.name" ></mt-cell>-->
+      <!--</mt-index-section>-->
       <mt-index-section v-for="(v,k) in Citys" :index="k" :key="k">
         <mt-cell v-for="(x,y) in v" :title="x.name" :key="y"></mt-cell>
       </mt-index-section>
-
     </mt-index-list>
+
   </div>
 </template>
 
 <script>
   import store from '@/store/index.js'
+  import {setStorage, getStorage} from '@/config/Utils.js'
 
   export default {
     name: "setCity",
     data() {
       return {
         Citys: [], //这里可能是中国所有的城市
-        title: 'ABCDEFGHGKLMNPQRSTVWXYZ'
+        result: [
+          {titile: 'a', value: 1},
+          {titile: 'b', value: 2},
+          {titile: 'c', value: 3},
+          {titile: 'd', value: 4},
+        ]
       }
     },
     /**
@@ -68,14 +86,24 @@
     },
     mounted() {
       this.$store.dispatch('getMyCity'); //获取所在城市
-      getCitys:{ //这里是获取所有的城市并且保存在该主键的Citys里共上方读取
-        this.$store.state.obj = {
-          url: '/restapi/shopping/v1/cities',
-        }
-        this.$store.dispatch('getAjax').then(response => {
-          this.Citys = response.data;
-        });
+      //这里是获取所有的城市并且保存在该主键的Citys里共上方读取
+      this.$store.state.obj = {
+        url: '/restapi/shopping/v1/cities',
       }
+      this.$store.dispatch('getAjax').then(response => {
+        //this.Citys = response.data;
+        let temp =[];
+        //console.log(temp);
+        console.log(response.data);
+        for(let e in response.data){
+          for (let x in response.data[e] )
+          temp.push(response.data[e][x])
+        }
+        console.log(temp);
+        setStorage('citys',temp);
+        //this.$store.state.Citys = temp;
+      });
+
     }
   }
 </script>
@@ -83,6 +111,10 @@
 <style scoped>
   h1 {
     font-size: 66px;
+  }
+
+  mint-cell-title {
+    text-align: left !important;
   }
 
   .paixu {

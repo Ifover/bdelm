@@ -7,6 +7,7 @@ Vue.use(Vuex)
 const state = {
   myStreet: null,
   myCity: null,
+  Citys: null,
   obj: [],
   response: null,
   error: null
