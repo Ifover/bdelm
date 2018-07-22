@@ -2,7 +2,7 @@
   <div id="app">
     <!--<router-link to="/">Home</router-link>-->
     <router-view/>
-    <mt-tabbar fixed class="sdsd">
+    <mt-tabbar fixed :style="{display:$store.state.isShow}">
       <mt-tab-item id="外卖">
         <img slot="icon">
         外卖
@@ -20,34 +20,18 @@
         我的
       </mt-tab-item>
     </mt-tabbar>
-    <!--<div class="bottoner"></div>-->
+    <div class="bottoner" :style="{display:$store.state.isShow}"></div>
   </div>
 </template>
 
 <script>
   import {setStorage, getStorage, removeStorage} from '@/config/Utils.js'
   import {Toast} from 'mint-ui';
+
   export default {
     name: 'app',
     mounted() {
-      /*
-      * 我觉得最好还是在这个页面初始化所有的仓库变量好了
-      *
-      * */
-      //this.getStreet();
-      //console.log(this.$store.state.myCity);
 
-      if (!this.$store.state.myStreet && !getStorage('myStreet') && this.$route.path == '/') {
-        //console.log('---未设置街道信息---');
-        let instance = Toast('未选择地址，2秒钟后跳转');
-
-        let _this = this
-        setTimeout(function () {
-          instance.close();
-          _this.$router.push({path: '/setStreet'})
-        }, 2000);
-        //console.log('---未设置myStreet-WebStorage---');
-      }
 
 
       // if (!getStorage('name')) {
@@ -73,10 +57,17 @@
 <style>
   /*lang="stylus"*/
   .bottoner {
-    position :relative;
-
-    padding-bottom: 55px;
+    position: relative;
+    height: 55px;
   }
+
+  body {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+
   /*
     .sd {
       position: fixed;
@@ -109,12 +100,13 @@
     }
   */
   #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-family: 'Helvetica Neue',Tahoma,Arial,PingFangSC-Regular,'Hiragino Sans GB','Microsoft Yahei',sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    //text-align: center;
+    /*text-align: center;*/
     color: #2c3e50;
-    //margin-top: 40px;
+    width: 100%;
+    /*margin-top: 40 px;*/
 
   }
 </style>

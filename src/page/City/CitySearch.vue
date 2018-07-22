@@ -1,16 +1,21 @@
 <template>
   <div id="citysearch">
-    <mt-search fixed v-model="value" autofocus show>
-      <div style="padding-top: 20px">
-        <mt-cell
-          v-if="final"
-          v-for="(item,index ) in final"
-          :title="item.name"
-          :value="item.id"
-          :key="index">
-        </mt-cell>
+    <mt-search fixed v-model="value"
+               placeholder="输入城市名、拼音或首字母查询"
+               autofocus show>
+      <div style="margin-top: 20px">
+        <div v-for="(item,index ) in final" @click="ads(index)">
+          <mt-cell
+            v-if="final"
+            :title="item.name"
+            :key="index">
+            <!--<a @click="ads"></a>-->
+          </mt-cell>
+        </div>
+
       </div>
     </mt-search>
+
   </div>
 </template>
 
@@ -41,42 +46,49 @@
     watch: {
       value() {
         this.final = [];
-        let temp = this.value;
-        console.log(temp);
+        let inputValue = this.value;
+        //console.log(temp);
         let resultTemp = this.result;
-        if (temp) {     //如果value为空就不执行任何操作
-          //console.log(resultTemp);
-          for (let v in resultTemp) {
+        if (inputValue) {     //如果value为空就不执行任何操作
+          for (let e in resultTemp) {
+            for (let x in resultTemp[e]) {
+              if (resultTemp[e][x].name.indexOf(inputValue) >= 0 ||
+                resultTemp[e][x].abbr.indexOf(inputValue.toUpperCase()) == 0 ||
+                resultTemp[e][x].pinyin.indexOf(inputValue.toLowerCase()) == 0) {
+                //console.log(resultTemp[v]);
+                this.final.push(resultTemp[e][x]);
+              }
+            }
+            //console.log(this.final);
+            //this.result.push(temp[e][x])
             /**
              * 这里的if判断就是判断名字和输入的是否能匹配到(不管位置如何),
              * 或者输入的字母是否为地址的缩写 一律转换为大写(对象存储中全为大写)
              * 或者输入的拼音是否为地址的拼音 一律转换为小写(对象存储种全为小写)
              */
-            if (resultTemp[v].name.indexOf(temp) >= 0 ||
-              resultTemp[v].abbr == temp.toUpperCase() ||
-              resultTemp[v].pinyin == temp.toLowerCase()) {
-              console.log(resultTemp[v]);
-              this.final.push(resultTemp[v]);
-            }
           }
-          console.log(this.final);
         }
+      }
+    },
+    methods: {
+      ads(index) {
+        //console.log(this.final[index]);
+        setStorage('setCity', this.final[index]);
+        this.$router.push({path: '/setStreet'});
 
       }
     },
     mounted() {
-      this.result = getStorage('citys');
-      //console.log(this.result);
-      // if (temp) {
-      //   for (let e in temp) {
-      //     console.log(temp[e]);
-      //   }
-      // }
+      this.$store.state.isShow = 'none';
+      this.result = getStorage('ALL_CITYS');
     }
   }
 </script>
 
 <style scoped>
+  /*#citysearch{*/
+  /*padding-top: 41px;*/
+  /*}*/
   .mint-search {
     top: 0;
     height: 100% !important;

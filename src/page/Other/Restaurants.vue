@@ -1,52 +1,88 @@
 <template>
   <div id="restaurants">
     <h1 v-if="!isOk">--未设置地址--</h1>
-    <!--<ul v-else>-->
-    <!--<li v-for="v in restaurantsList">-->
-    <!--<img :src="computePic(v.image_path)">-->
-    <!--{{v.name}}-->
-    <!--<p>{{v.rating}} 月售:{{v.recent_order_num}}</p>-->
-    <!--<p>起送 ¥{{v.float_minimum_order_amount}}| 配送 ¥{{v.float_delivery_fee}}</p>-->
-    <!--<p>{{v.flavors[0].name}}</p>-->
-    <!--<p v-if="v.activities[1]">满减 {{v.activities[1].tips}}</p>-->
-    <!--</li>-->
-    <!--</ul>-->
-    <div
-      v-else
-      v-infinite-scroll="loadMore"
-      infinite-scroll-disabled="loading"
-      infinite-scroll-distance="8">
-      <div class="index-container" v-for="v in restaurantsList" v-if="restaurantsList.length>0">
+
+    <section class="shoplist" v-else
+             v-infinite-scroll="loadMore"
+             infinite-scroll-disabled="loading"
+             infinite-scroll-distance="8">
+      <section class="index-container" v-for="v in restaurantsList" v-if="restaurantsList.length>0">
         <div class="index-shopInfo">
           <div class="logo-main">
-            <img :src="setPic(v.image_path)">
+            <img class="logo-logo"
+                 :src="setPic(v.image_path)">
+
+            <!--src="https://fuss10.elemecdn.com/f/4c/7bb04e3e6e2dc22c14eb60cdf2868jpeg.jpeg">-->
+
           </div>
           <div class="index-main">
-            <div class="index-line">
+            <section class="index-line">
               <h3 class="index-shopname">
+                <i content="品牌" class="index-premium">品牌</i>
                 <span>{{v.name}}</span>
               </h3>
-            </div>
-            <div class="index-line">
-              {{v.rating}} 月售{{v.recent_order_num}}单
-            </div>
-            <div class="index-line">
-              起送 ¥{{v.float_minimum_order_amount}} | 配送 ¥{{v.float_delivery_fee}}
-            </div>
+            </section>
+            <section class="index-line">
+              <div class="index-rateWrap">
+                <div class="Rating-wrapper">
+                  <div class="Rating-gray">
+                    <img
+                      src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTU0LjAxNyA4LjA3MmwtMi41NTIgMS41NjFjLS40NzYuMjkxLS43NTguMDk2LS42MjYtLjQ1NWwuNjk2LTIuOTA5LTIuMjczLTEuOTQ0Yy0uNDI0LS4zNjItLjMyNS0uNjkxLjIzOS0uNzM2bDIuOTgyLS4yMzdMNTMuNjMuNTg5Yy4yMTMtLjUxNS41NTctLjUyMy43NzQgMGwxLjE0NiAyLjc2MyAyLjk4Mi4yMzdjLjU1Ni4wNDQuNjcuMzY4LjI0LjczNmwtMi4yNzQgMS45NDQuNjk2IDIuOTFjLjEzLjU0Mi0uMTQzLjc1LS42MjYuNDU0bC0yLjU1MS0xLjU2em0tNDggMEwzLjQ2NSA5LjYzM2MtLjQ3Ni4yOTEtLjc1OC4wOTYtLjYyNi0uNDU1bC42OTYtMi45MDktMi4yNzMtMS45NDRjLS40MjQtLjM2Mi0uMzI1LS42OTEuMjM5LS43MzZsMi45ODItLjIzN0w1LjYzLjU4OWMuMjEzLS41MTUuNTU3LS41MjMuNzc0IDBMNy41NSAzLjM1MmwyLjk4Mi4yMzdjLjU1Ni4wNDQuNjcuMzY4LjI0LjczNkw4LjQ5NyA2LjI2OWwuNjk2IDIuOTFjLjEzLjU0Mi0uMTQzLjc1LS42MjYuNDU0bC0yLjU1MS0xLjU2em0xMiAwbC0yLjU1MiAxLjU2MWMtLjQ3Ni4yOTEtLjc1OC4wOTYtLjYyNi0uNDU1bC42OTYtMi45MDktMi4yNzMtMS45NDRjLS40MjQtLjM2Mi0uMzI1LS42OTEuMjM5LS43MzZsMi45ODItLjIzN0wxNy42My41ODljLjIxMy0uNTE1LjU1Ny0uNTIzLjc3NCAwbDEuMTQ2IDIuNzYzIDIuOTgyLjIzN2MuNTU2LjA0NC42Ny4zNjguMjQuNzM2bC0yLjI3NCAxLjk0NC42OTYgMi45MWMuMTMuNTQyLS4xNDMuNzUtLjYyNi40NTRsLTIuNTUxLTEuNTZ6bTEyIDBsLTIuNTUyIDEuNTYxYy0uNDc2LjI5MS0uNzU4LjA5Ni0uNjI2LS40NTVsLjY5Ni0yLjkwOS0yLjI3My0xLjk0NGMtLjQyNC0uMzYyLS4zMjUtLjY5MS4yMzktLjczNmwyLjk4Mi0uMjM3TDI5LjYzLjU4OWMuMjEzLS41MTUuNTU3LS41MjMuNzc0IDBsMS4xNDYgMi43NjMgMi45ODIuMjM3Yy41NTYuMDQ0LjY3LjM2OC4yNC43MzZsLTIuMjc0IDEuOTQ0LjY5NiAyLjkxYy4xMy41NDItLjE0My43NS0uNjI2LjQ1NGwtMi41NTEtMS41NnptMTIgMGwtMi41NTIgMS41NjFjLS40NzYuMjkxLS43NTguMDk2LS42MjYtLjQ1NWwuNjk2LTIuOTA5LTIuMjczLTEuOTQ0Yy0uNDI0LS4zNjItLjMyNS0uNjkxLjIzOS0uNzM2bDIuOTgyLS4yMzdMNDEuNjMuNTg5Yy4yMTMtLjUxNS41NTctLjUyMy43NzQgMGwxLjE0NiAyLjc2MyAyLjk4Mi4yMzdjLjU1Ni4wNDQuNjcuMzY4LjI0LjczNmwtMi4yNzQgMS45NDQuNjk2IDIuOTFjLjEzLjU0Mi0uMTQzLjc1LS42MjYuNDU0bC0yLjU1MS0xLjU2eiIgZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+">
+                  </div>
+                  <div class="Rating-actived" :style="{width:v.rating*20 +'%'}">
+                    <img
+                      src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIwJSIgeTE9IjUwJSIgeTI9IjUwJSIgaWQ9ImEiPjxzdG9wIHN0b3AtY29sb3I9IiNGRkRFMDAiIG9mZnNldD0iMCUiLz48c3RvcCBzdG9wLWNvbG9yPSIjRkZCMDAwIiBvZmZzZXQ9IjEwMCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBkPSJNNTQuMDE3IDguMDcybC0yLjU1MiAxLjU2MWMtLjQ3Ni4yOTEtLjc1OC4wOTYtLjYyNi0uNDU1bC42OTYtMi45MDktMi4yNzMtMS45NDRjLS40MjQtLjM2Mi0uMzI1LS42OTEuMjM5LS43MzZsMi45ODItLjIzN0w1My42My41ODljLjIxMy0uNTE1LjU1Ny0uNTIzLjc3NCAwbDEuMTQ2IDIuNzYzIDIuOTgyLjIzN2MuNTU2LjA0NC42Ny4zNjguMjQuNzM2bC0yLjI3NCAxLjk0NC42OTYgMi45MWMuMTMuNTQyLS4xNDMuNzUtLjYyNi40NTRsLTIuNTUxLTEuNTZ6bS00OCAwTDMuNDY1IDkuNjMzYy0uNDc2LjI5MS0uNzU4LjA5Ni0uNjI2LS40NTVsLjY5Ni0yLjkwOS0yLjI3My0xLjk0NGMtLjQyNC0uMzYyLS4zMjUtLjY5MS4yMzktLjczNmwyLjk4Mi0uMjM3TDUuNjMuNTg5Yy4yMTMtLjUxNS41NTctLjUyMy43NzQgMEw3LjU1IDMuMzUybDIuOTgyLjIzN2MuNTU2LjA0NC42Ny4zNjguMjQuNzM2TDguNDk3IDYuMjY5bC42OTYgMi45MWMuMTMuNTQyLS4xNDMuNzUtLjYyNi40NTRsLTIuNTUxLTEuNTZ6bTEyIDBsLTIuNTUyIDEuNTYxYy0uNDc2LjI5MS0uNzU4LjA5Ni0uNjI2LS40NTVsLjY5Ni0yLjkwOS0yLjI3My0xLjk0NGMtLjQyNC0uMzYyLS4zMjUtLjY5MS4yMzktLjczNmwyLjk4Mi0uMjM3TDE3LjYzLjU4OWMuMjEzLS41MTUuNTU3LS41MjMuNzc0IDBsMS4xNDYgMi43NjMgMi45ODIuMjM3Yy41NTYuMDQ0LjY3LjM2OC4yNC43MzZsLTIuMjc0IDEuOTQ0LjY5NiAyLjkxYy4xMy41NDItLjE0My43NS0uNjI2LjQ1NGwtMi41NTEtMS41NnptMTIgMGwtMi41NTIgMS41NjFjLS40NzYuMjkxLS43NTguMDk2LS42MjYtLjQ1NWwuNjk2LTIuOTA5LTIuMjczLTEuOTQ0Yy0uNDI0LS4zNjItLjMyNS0uNjkxLjIzOS0uNzM2bDIuOTgyLS4yMzdMMjkuNjMuNTg5Yy4yMTMtLjUxNS41NTctLjUyMy43NzQgMGwxLjE0NiAyLjc2MyAyLjk4Mi4yMzdjLjU1Ni4wNDQuNjcuMzY4LjI0LjczNmwtMi4yNzQgMS45NDQuNjk2IDIuOTFjLjEzLjU0Mi0uMTQzLjc1LS42MjYuNDU0bC0yLjU1MS0xLjU2em0xMiAwbC0yLjU1MiAxLjU2MWMtLjQ3Ni4yOTEtLjc1OC4wOTYtLjYyNi0uNDU1bC42OTYtMi45MDktMi4yNzMtMS45NDRjLS40MjQtLjM2Mi0uMzI1LS42OTEuMjM5LS43MzZsMi45ODItLjIzN0w0MS42My41ODljLjIxMy0uNTE1LjU1Ny0uNTIzLjc3NCAwbDEuMTQ2IDIuNzYzIDIuOTgyLjIzN2MuNTU2LjA0NC42Ny4zNjguMjQuNzM2bC0yLjI3NCAxLjk0NC42OTYgMi45MWMuMTMuNTQyLS4xNDMuNzUtLjYyNi40NTRsLTIuNTUxLTEuNTZ6IiBmaWxsPSJ1cmwoI2EpIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=">
+                  </div>
+                </div>
+                <span class="index-rate">{{v.rating}}</span>
+                <span>月售{{v.recent_order_num}}单</span>
+              </div>
+              <div class="delivery">
+              <div content="蜂鸟专送" alt="蜂鸟专送" class="delivery-icon">蜂鸟专送</div>
+              </div>
+            </section>
+            <section class="index-line">
+              <div class="index-moneylimit">
+                <span>¥{{v.piecewise_agent_fee.rules[0].price}}起送</span>
+                <span>{{v.piecewise_agent_fee.description}}</span>
+              </div>
+              <div class="index-distanceWrap">
+                <span>1.30km</span>
+                <span>{{v.order_lead_time}}分钟</span>
+              </div>
+            </section>
           </div>
+        </div>
+        <div class="index-activityWrap">
           <span>
-        </span>
+            <img class="index-dashedline"
+                 src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgLjI1TDI4MCAwIiBzdHJva2U9IiNDQ0MiIHN0cm9rZS13aWR0aD0iLjUiIGZpbGw9Im5vbmUiIHN0cm9rZS1kYXNoYXJyYXk9IjEiLz48L3N2Zz4=">
+          </span>
+          <section class="index-activities">
+            <div class="index-activityList">
+              <div class="index-actRow">
+              <span class="index-iconWrap">
+                <span class="index-icon" style="background-color: rgb(112, 188, 70);">首</span>
+              </span>
+                <span class="index-desc">新用户下单立减17元</span>
+              </div>
+              <div class="index-actRow">
+              <span class="index-iconWrap">
+                <span class="index-icon" style="background-color: rgb(240, 115, 115);">减</span>
+              </span>
+                <span class="index-desc">满8减7，满36减20，满50减28</span>
+              </div>
+            </div>
+            <div class="index-activityBtn">
+              <span>{{v.activities.length}}个活动</span>
+              <img
+                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSIjOTk5IiBkPSJNNC41NzcgNS40MjNjLjc5Ljc3IDIuMDczLjc2NyAyLjg1NyAwbDQuMTItNC4wMjZDMTIuMzQ1LjYyNSAxMi4wOSAwIDEwLjk4NSAwSDEuMDI3Qy0uMDc3IDAtLjMzLjYzLjQ1NyAxLjM5N2w0LjEyIDQuMDI2eiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+"
+                class="index-open"></div>
+          </section>
         </div>
-        <div class="index-activety">
-          <div class="index-activityList" v-if="v.activities[1]">
-            满减 {{v.activities[1].tips.length>20?v.activities[1].tips.substring(0,20):v.activities[1].tips}}
-          </div>
-          <div class="index-activityBtn">
-          </div>
-        </div>
-      </div>
-    </div>
-
+        <hr>
+      </section>
+    </section>
   </div>
 </template>
 
@@ -66,31 +102,15 @@
       setPic(img) {
         return computePic(img)
       },
-      getjs(str) {
-        let item = eval('(' + str + ')');
-        //console.log(item);
-        return item;
-      },
       show() {
         //console.log(this.$route.params);
       },
       loadMore() {
+        console.log(this.restaurantsList.length);
+        if (this.restaurantsList.length >= 8) return //测试时使用,屏蔽二次加载
         this.loading = true;
         let tempStreet = getStorage('myStreet');
-        //console.log(tempStreet);
-        // this.$store.state.obj = {
-        //   url: '/restapi/shopping/restaurants',
-        //   params: {
-        //     extras: ['activities'],
-        //     geohash: tempStreet.geohash,
-        //     latitude: tempStreet.latitude,
-        //     offset: this.restaurantsList.length,
-        //     limit: 8,
-        //     longitude: tempStreet.longitude,
-        //     terminal: 'web'
-        //   }
-        // }
-        this.$store.state.obj = {
+        let obj = {
           url: '/restapi/shopping/v3/restaurants',
           params: {
             latitude: tempStreet.latitude,
@@ -102,10 +122,9 @@
             extra_filters: 'home',
             rank_id: '190a4531e5d54b809b029549af66a7d1',
             terminal: 'h5'
-            //terminal: 'web'
           }
         }
-        this.$store.dispatch('getAjax').then(response => {
+        this.$store.dispatch('getAjax', obj).then(response => {
           console.log(response.data.items);
           response.data.items.forEach(e => {
             this.restaurantsList.push(e.restaurant)
@@ -114,31 +133,7 @@
           //console.log(response);
         });
         this.loading = false;
-      },
-      getRestaurants() {
-
-        //console.log(this.$store.state.myStreet);
-        let tempStreet = getStorage('myStreet');
-        //console.log(tempStreet);
-        //console.log('tempStreet:' + tempStreet);
-        this.$store.state.obj = {
-          url: '/restapi/shopping/restaurants',
-          params: {
-            extras: ['activities'],
-            geohash: tempStreet.geohash,
-            latitude: tempStreet.latitude,
-            offset: 0,
-            limit: 8,
-            longitude: tempStreet.longitude,
-            terminal: 'web'
-          }
-        }
-        this.$store.dispatch('getAjax').then(response => {
-          //console.log(response);
-          this.restaurantsList = response.data;
-        });
       }
-
     },
     mounted() {
       this.$store.state.myStreet = getStorage('myStreet');
@@ -153,55 +148,220 @@
 </script>
 
 <style scoped lang="stylus">
+  #restaurants {
+    //text-align center
+  }
+    hr{
+      opacity: 0.4;
 
+      line-height: 1px;
 
-  .index-container {
-    position: relative;
-    border-bottom: .013333rem solid #eee;
-    border-bottom: .133333vw solid #eee;
-    background-color: #fff;
-    color: #666;
-    padding: .4rem 0;
-    padding: 4vw 0;
-    list-style: none;
-    font-size: .293333rem;
-    line-height: normal;
-    font-family: Microsoft Yahei;
-
-    .logo-main {
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      img {
-        width 100%
-        height: 100%
-      }
     }
-    .index-main {
-      padding-left: 2.666667vw;
-      position: relative
-      padding-left 60px
-
-      .index-line {
-        top: 0px
-        text-align: left;
-        .index-shopname {
-          text-align center
-          display: flex;
-          margin: 5px;
-          color: #333;
-          font-weight: 700;
-          font-size: .4rem;
-          overflow: hidden;
-
-          span {
-            font-weight: 700;
+  .shoplist {
+    background-color: #fff;
+    .index-container {
+      position: relative;
+      //border-bottom: .133333vw solid #eee;
+      color: #666;
+      padding: 1px 0
+      list-style: none;
+      font-size: 12px;
+      line-height: normal
+      .index-shopInfo {
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 0 10px
+        .logo-main {
+          position: relative;
+          flex: none;
+          z-index: 0;
+          padding-top 10px
+          width: 60px;
+          height: 60px;
+          .logo-logo {
+            //box-sizing: border-box;
+            //display: block;
+            width: 100%;
+            height: 100%;
+            border: 0.5px solid rgba(0, 0, 0, .08);
           }
+        }
+        .index-main {
+          flex-grow: 1;
+          flex-direction: column;
+          user-select: none;
+
+          padding-top 10px
+
+          padding-left: 10px
+          display: flex;
+          justify-content: space-between;
+          overflow: hidden
+          .index-line {
+            display: flex;
+            align-items: center;
+            .index-shopname {
+              display: flex;
+              margin: 0;
+              color: #333;
+              font-weight: 700;
+              font-size: 15px;
+              overflow: hidden;
+              .index-premium {
+                position: relative;
+                display: flex;
+                margin-right: 5px;
+                //padding: .266667vw .666667vw;
+                color: transparent;
+                text-align: center;
+                font-weight: 700;
+                font-style: normal;
+              }
+              .index-premium:after {
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 0;
+                content: attr(content);
+                padding: 2px 5px;
+                color: #6f3f15;
+                font-weight: 700;
+                font-size: 20px;
+                //border-radius: 1.066667vw;
+                background-image: linear-gradient(-139deg, #fff100, #ffe339);
+                white-space: nowrap;
+                transform: scale(.6);
+                transform-origin: 0 0
+              }
+            }
+            .index-rateWrap {
+              display: flex;
+              align-items: center;
+              .Rating-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: inline-block;
+                vertical-align: middle;
+                .Rating-actived, .Rating-gray {
+                  display: flex;
+                }
+                .Rating-actived {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  overflow: hidden;
+                }
+              }
+              .index-rate {
+                margin: 0 4px;
+              }
+            }
+            .delivery {
+              display: flex;
+              align-items: center
+              margin-left: 82px;
+              .delivery-icon {
+                position: absolute;
+                right 5px
+                content: attr(content);
+                padding: 1px;
+                border-radius: .8vw;
+                transform: scale(.85)
+                align-content: center
+                color: #fff;
+                border: 1px solid #0097ff;
+                background-image: linear-gradient(45deg, #0085ff, #0af)
+              }
+            }
+            .index-moneylimit {
+              display: flex;
+              align-content: center
+              span + span:before {
+                margin: 3px;
+                color: #ddd;
+                content: "|";
+              }
+            }
+            .index-distanceWrap {
+              position absolute
+              //flex-shrink
+              align-content: center
+              //float right
+              margin-left: 200px;
+              //display: inline-block;
+              transform: scale(.85)
+              span + span:before {
+                margin: 3px;
+                color: #ddd;
+                content: "|";
+              }
+            }
+          }
+        }
+      }
+      .index-activityWrap {
+        padding-left: 80px
+        .index-activities {
+          position: relative;
+          justify-content: space-between;
+          align-content: stretch;
+          overflow: hidden
+          .index-activityList {
+            flex: 1;
+            //padding-right: 2.666667vw;
+            overflow: hidden
+          }
+          .index-actRow {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            line-height: 20px
+            .index-iconWrap {
+              display: inline-block;
+              position: relative;
+              //margin-right: 1.6vw;
+              height: 20px;
+              width: 20px;
+              vertical-align: middle
+              .index-icon {
+                position: absolute;
+                left: 0;
+                top: 3px;
+                z-index: 0;
+                height: 28px;
+                width: 28px;
+                font-size: 22px;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+                transform: scale(.5);
+                transform-origin: 0 0
+              }
+            }
+            .index-desc {
+              display: inline-block;
+              flex: 1;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              vertical-align: middle
+
+            }
+          }
+        }
+        .index-activityBtn {
+          position absolute
+          top 2px
+          right 0
+          padding: 0 10px
+          color: #999;
+          text-align: right;
         }
 
       }
     }
   }
-
-
 </style>

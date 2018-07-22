@@ -11,7 +11,6 @@ import getStreet from '@/page/Street/getStreet'
 import setStreet from '@/page/Street/setStreet'
 
 
-
 import CitySet from '@/page/City/CitySet'
 import CitySearch from '@/page/City/CitySearch'
 
@@ -34,12 +33,9 @@ export default new Router({
       path: '/',
       component: Index,
       children: [
-        {
-          path: 'home', components: {
-            default: Home,
-            fenlei: FenLei
-          }
-        }
+        {path: 'home', component: Home},
+        {path: 'setStreet/:cityid?', component: setStreet}
+
       ]
     },
     // {
@@ -54,7 +50,6 @@ export default new Router({
     // {path: '/', name: 'Home', component: Home},
     {path: '/cityset', component: CitySet},
     {path: '/citysearch', component: CitySearch},
-    {path: '/setStreet', component: setStreet},
     {path: '/getStreet/:street', component: getStreet}
     // {path: '/restaurants/:geohash&:latitude&:longitude', component: Restaurants}
   ]

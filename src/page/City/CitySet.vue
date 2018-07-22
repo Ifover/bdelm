@@ -24,27 +24,17 @@
         <mt-button>搜索</mt-button>
       </router-link>
     </mt-header>
-    <!--<span>猜你在<a href="/"> {{this.$store.state.myCity.name}} </a></span>-->
-    <!--<ul>-->
-    <!--<li class="liebiao" v-for="(v,k) in Citys">-->
-    <!--<div class="paixu">{{k}}</div>-->
-    <!--<ul>-->
-    <!--<template v-for="(x,y) in v">-->
-    <!--<a @click="showCityInfo(k,y)">-->
-    <!--<li class="dizhi" v-if="x.name.length<5">{{x.name}}</li>-->
-    <!--<li class="dizhi" v-else>{{x.name.substring(0,4)}}...</li>-->
-    <!--</a>-->
-    <!--</template>-->
-    <!--</ul>-->
-    <!--</li>-->
-    <!--</ul>-->
 
     <mt-index-list>
-      <!--<mt-index-section  index="#" >-->
-      <!--<mt-cell :title="this.$store.state.myCity.name" ></mt-cell>-->
-      <!--</mt-index-section>-->
+      <mt-index-section index="#" v-if="this.ipCity">
+        <div @click="cityBack('YY','YY')">
+          <mt-cell :title="'🚩 '+ this.ipCity.name"></mt-cell>
+        </div>
+      </mt-index-section>
       <mt-index-section v-for="(v,k) in Citys" :index="k" :key="k">
-        <mt-cell v-for="(x,y) in v" :title="x.name" :key="y"></mt-cell>
+        <div @click="cityBack(k,y)" v-for="(x,y) in v">
+          <mt-cell :title="x.name" :key="y"></mt-cell>
+        </div>
       </mt-index-section>
     </mt-index-list>
 
@@ -59,13 +49,8 @@
     name: "setCity",
     data() {
       return {
-        Citys: [], //这里可能是中国所有的城市
-        result: [
-          {titile: 'a', value: 1},
-          {titile: 'b', value: 2},
-          {titile: 'c', value: 3},
-          {titile: 'd', value: 4},
-        ]
+        ipCity: [], //这里是定位出来的城市
+        Citys: []  //这里可能是中国所有的城市
       }
     },
     /**
@@ -78,37 +63,49 @@
      * 考虑到vuex刷新会导致数据全部重置,可以考虑用那个方法 对就是那个 s什么的
      */
     methods: {
-      showCityInfo(x, y) {
-        this.$store.state.myCity = this.Citys[x][y];
-        this.$router.push({path: '/'})
-      },
-
+      cityBack(k, y) {
+        //console.log(k, y);
+        if (k == y) {
+          setStorage('setCity', this.ipCity);
+        } else {
+          setStorage('setCity', this.Citys[k][y]);
+        }
+        this.$router.push({path: '/setStreet'});
+      }
     },
     mounted() {
-      this.$store.dispatch('getMyCity'); //获取所在城市
-      //这里是获取所有的城市并且保存在该主键的Citys里共上方读取
-      this.$store.state.obj = {
-        url: '/restapi/shopping/v1/cities',
-      }
-      this.$store.dispatch('getAjax').then(response => {
-        //this.Citys = response.data;
-        let temp =[];
-        //console.log(temp);
-        console.log(response.data);
-        for(let e in response.data){
-          for (let x in response.data[e] )
-          temp.push(response.data[e][x])
+      this.$store.state.isShow = 'none'; //让导航栏隐藏因为属于次级页面还是隐藏比较好看
+      this.ipCity = getStorage('ipCity');//获取ip所在城市
+      /*
+      *   以下:
+      *     首先获取LocalStorage内ALL_CITYS
+      *     如果未获取到内容则说明未设置该项
+      *       开始从网络获取所有城市信息
+      *       获取成功后赋值给data内的Citys
+      *     如果成功获取到内容
+      *       直接复制给data内的Citys
+      * */
+      let allCitys = getStorage('ALL_CITYS')
+      if (allCitys) {
+        this.Citys = allCitys;
+      } else {
+        let obj = {
+          url: '/restapi/shopping/v1/cities',
         }
-        console.log(temp);
-        setStorage('citys',temp);
-        //this.$store.state.Citys = temp;
-      });
-
+        this.$store.dispatch('getAjax', obj).then(response => {
+          this.Citys = response.data;
+          setStorage('ALL_CITYS', response.data);
+        });
+      }
     }
   }
 </script>
 
 <style scoped>
+  #setCity {
+    padding-top: 41px;
+  }
+
   h1 {
     font-size: 66px;
   }

@@ -10,39 +10,40 @@ const state = {
   Citys: null,
   obj: [],
   response: null,
-  error: null
+  error: null,
+  isShow: ''
 }
 
 const mutations = {}
 
 const actions = {
-  getAjax({}) {
+  getAjax(context, obj) {
     return new Promise((resolve, reject) => {
-      //console.log(state);
+      //console.log(obj.url);
       axios({
         method: 'get',
-        url: state.obj.url,
-        params: state.obj.params,
+        url: obj.url,
+        params: obj.params,
         withCredentials: true
       }).then(function (response) {
         resolve(response);
-        //console.log(response);
       }).catch(error => {
           reject(error);
         }
       )
     })
   },
-  getMyCity(context) {
-    state.obj = {
-      url: '/restapi/shopping/v1/cities/guess',
-      // params: {type: 'guess'}
-    }
-    context.dispatch('getAjax').then(response => {
-
-      context.state.myCity = response.data;
-    })
-  }
+  // getMyCity(context) {
+  //   state.obj = {
+  //     url: '/restapi/shopping/v1/cities/guess',
+  //     // params: {type: 'guess'}
+  //   }
+  //   context.dispatch('getAjax').then(response => {
+  //     context.state.myCity = response.data;
+  //     console.log('----下面是store-------');
+  //     console.log(context.state.myCity);
+  //   })
+  // }
 }
 export default new Vuex.Store({
   state,

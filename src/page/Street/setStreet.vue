@@ -6,33 +6,52 @@
       </router-link>
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>
-    <div id="hhh">
-      <a href="#/cityset">
-        <span>{{this.myCity.name}}▽</span>
-      </a>
-      <input type="text" v-model="address" placeholder="请输入地址">
-      <!--<button @click="getStreet()">搜索</button>-->
-      <ul>
-        <template v-for="(v,k) in  addressList" v-if="addressList.length!=0 && v.city_id==myCity.id">
-          <li>
-            <!---->
-            <a class="link" @click="setStreet(k)">
-              <p style="font-size: 10px">{{v.short_address}}</p>
-              <p style="font-size: 10px;color: darkgrey" v-if="v.address.length>20">{{v.address.substring(0,20)}}...
-                附近有{{v.count}}家商家 </p>
-              <p style="font-size: 10px;color: darkgrey" v-else>{{v.address}} 附近有{{v.count}}家商家 </p>
-            </a>
-          </li>
-        </template>
-      </ul>
-    </div>
 
+    <div id="hhh" v-if="this.setCity">
+      <div class="stt">
+        <div class="title">
+          <a href="#/cityset">
+            <span>{{this.setCity.name}}▾</span>
+          </a>
+        </div>
+        <div class="inputt">
+          <input type="text" v-model="address" placeholder="🔍 请输入地址">
+        </div>
+      </div>
+      <!--<button @click="getStreet()">搜索</button>-->
+      <!--<ul>-->
+      <!--<template v-for="(v,k) in  addressList" v-if="addressList.length!=0 && v.city_id==myCity.id">-->
+      <!--<li>-->
+      <!--&lt;!&ndash;&ndash;&gt;-->
+      <!--<a class="link" @click="setStreet(k)">-->
+      <!--<p style="font-size: 10px">{{v.short_address}}</p>-->
+      <!--<p style="font-size: 10px;color: darkgrey" v-if="v.address.length>20">{{v.address.substring(0,20)}}...-->
+      <!--附近有{{v.count}}家商家 </p>-->
+      <!--<p style="font-size: 10px;color: darkgrey" v-else>{{v.address}} 附近有{{v.count}}家商家 </p>-->
+      <!--</a>-->
+      <!--</li>-->
+      <!--</template>-->
+      <!--</ul>-->
+      <div class="ccc">
+        <div v-for="(v,k) in  addressList" v-if="addressList.length!=0 && v.city_id==setCity.id" @click="setStreet(k)">
+          <mt-cell
+            :title="v.name"
+            :label="v.address"
+            is-link
+            :value="v.distance">
+          </mt-cell>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 </template>
 
 <script>
   import _ from 'lodash'
-  import {setStorage, getStorage, removeStorage} from '@/config/Utils.js'
+  import {setStorage, getStorage} from '@/config/Utils.js'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: "setStreet",
@@ -40,27 +59,32 @@
       return {
         address: "",
         addressList: [],
-        myCity: []
+        setCity: []
       }
     },
     watch: {
       address: _.debounce(
         function () {
-          this.myCity = this.$store.state.myCity;
-          //console.log(this.myCity);
-          this.$store.state.obj = {
-            url: '/restapi/v2/pois',
-            params: {
-              extras: ['count'],
-              keyword: this.address,
-              limit: 20,
-              type: 'nearby'
+          if (this.address && this.address.indexOf(" ") < 0) {
+            let city = this.setCity;
+            //console.log(city);
+            let obj = {
+              url: '/restapi/bgs/poi/search_poi_nearby_alipay',
+              params: {
+                keyword: this.address,
+                offset: 0,
+                limit: 20,
+                latitude: city.latitude,
+                longitude: city.longitude
+              }
             }
+            this.$store.dispatch('getAjax', obj).then(response => {
+              //console.log(response);
+              this.addressList = response.data;
+            })
+          } else {
+            this.addressList = [];
           }
-          this.$store.dispatch('getAjax').then(response => {
-            //console.log(response);
-            this.addressList = response.data;
-          })
         }, 300  //这里就是延迟的时间 (毫秒)
       )
       /*
@@ -76,30 +100,76 @@
 
     },
     methods: {
-
       setStreet(k) {
-        //console.log(this.addressList[k]);
-        //setStorage('myStreet', this.addressList[k]);
-        //console.log(getStorage('name'));
-        this.$store.state.myStreet = this.addressList[k];
-        console.log('---街道信息已设置---');
         setStorage('myStreet', this.addressList[k]);
-        console.log('---myStreet-WebStorage-已设置---');
         this.$router.push({path: '/'});
-        //:href="'#/restaurants/'+v.geohash+'&'+v.latitude+'&'+v.longitude"
       }
     },
     mounted() {
-      let x = this.$store.state.myCity
-      //console.log(x);
-      this.myCity = x;
+      this.$store.state.isShow = 'none'; //让导航栏隐藏因为属于次级页面还是隐藏比较好看
+      //setStorage('ipCity',this.$store.state.myCity);
+
+      let ipCity = getStorage('ipCity'); //获取localstorage中存储的ip城市信息
+      let setCity = getStorage('setCity'); //获取localstorage中存储的自定城市信息
+      /**
+       *  首先查看localstorage里面的myCity
+       *  为空则使用ipCity 并且打印ipCity
+       *  否则直接显示myCity的城市信息
+       *  因为一个是用户自己规定的城市一个是系统推荐的城市(貌似百度的这个api,GG了?)
+       */
+      this.setCity = setCity ? setCity : ipCity;
+      //console.log(this.setCity);
     }
   }
 </script>
 
 <style scoped lang="stylus">
+  #setStreet {
+    padding-top 41px
+    //text-align center
+  }
+
+  #hhh {
+    //padding 0 20px 0 20px
+  }
+
+  .stt {
+    position relative
+    display flex
+
+    width 100%
+    height 40px
+    .title {
+      padding-top: 8px;
+      padding-left 10px
+      height 24px
+      width 15%
+      //font-size: .346667rem;
+      a {
+        text-align center
+        text-decoration none
+        color: #000
+      }
+    }
+    .inputt {
+      //padding-left 10px
+      padding-top: 5px;
+      width 75%
+      font-size: .346667rem;
+      input {
+        width 100%
+        line-height 24px
+        //▴
+      }
+    }
+  }
+
   h1 {
     font-size: 66px !important
+  }
+
+  .mint-cell-text {
+    font-weight 600 !important
   }
 
   ul {
