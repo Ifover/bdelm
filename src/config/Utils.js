@@ -26,3 +26,9 @@ export const removeStorage = name => {
   if (!name) return;
   window.localStorage.removeItem(name);
 }
+/**
+ * 清空LocalStorage
+ */
+export const clearStorage = () => {
+  window.localStorage.clear();
+}

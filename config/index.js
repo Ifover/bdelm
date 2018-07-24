@@ -22,6 +22,10 @@ module.exports = {
       '/restapi': {
         target: 'https://h5.ele.me/',//接口域名
         changeOrigin: true,//是否跨域
+      },
+      '/lib': {
+        target: 'https://shadow.elemecdn.com/',//接口域名
+        changeOrigin: true,//是否跨域
       }
     },
 

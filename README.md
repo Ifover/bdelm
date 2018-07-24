@@ -70,3 +70,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 >　　这几天做了很多东西,但是懒得写日志了<br>
 　　然后明天把餐厅的完善掉<br>
 　　然后还有就是城市搜索的搜索框弄的和主页一样<br>
+
+>2018年7月24日23:41:30<br>
+>　　餐厅的大部分都写好了CSS也完善的差不多了,剩下的一些小细节不加也罢<br>
+　　明天搞排序这些吧 就这样子GG<br>

@@ -32,10 +32,9 @@
 </template>
 
 <script>
-  import {Swipe, SwipeItem} from 'mint-ui';
-  import {setStorage, getStorage, removeStorage} from '@/config/Utils.js'
+  import {setStorage, getStorage, clearStorage} from '@/config/Utils.js'
   import {computePic} from '@/config/Tools'
-  import {MessageBox} from 'mint-ui';
+  import {MessageBox, Toast} from 'mint-ui';
 
   /**
    *
@@ -62,17 +61,28 @@
         return computePic(img)
       },
       join(k) {
-        MessageBox('提示',  '对，'+this.Tuijian[k].name + '还不能点！');
+        if (k == 10) {
+          MessageBox.confirm('此操作会清空所有的LocalStorage').then(action => {
+            clearStorage();
+          }).catch(v => {
+
+          });
+        } else {
+          MessageBox('提示', '对，' + this.Tuijian[k].name + '还不能点！');
+        }
       }
     },
     mounted() {
+      let ipCity = getStorage('ipCity');
       let setCity = getStorage('setCity');
-      if (setCity) {
+      console.log(setCity);
+      let finalCity = setCity == null ? ipCity : setCity;
+      if (finalCity) {
         let obj = {
           url: '/restapi/shopping/openapi/entries',
           params: {
-            latitude: setCity.latitude,
-            longitude: setCity.longitude,
+            latitude: finalCity.latitude,
+            longitude: finalCity.longitude,
             templates: ['main_template',]
             // 'templates[]':  'favourable_template'
           }

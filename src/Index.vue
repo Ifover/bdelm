@@ -67,7 +67,12 @@
     margin-right: 0px;
     margin-left: 0px;
   }
-
+  .mint-header-title{
+    font-size: 16px !important;
+  }
+  .loading {
+    margin-left: 165px;
+  }
   /*
     .sd {
       position: fixed;

@@ -7,31 +7,24 @@
       <mt-button icon="more" slot="right"></mt-button>
     </mt-header>
 
-    <div id="hhh" v-if="this.setCity">
+    <div id="hhh" v-if="this.isShow">
       <div class="stt">
         <div class="title">
           <a href="#/cityset">
-            <span>{{this.setCity.name}}▾</span>
+            <span v-if="this.setCity.name.length>3">{{this.setCity.name.substring(0,3)}}.. ▾</span>
+            <span v-else>{{this.setCity.name}} ▾</span>
           </a>
         </div>
         <div class="inputt">
-          <input type="text" v-model="address" placeholder="🔍 请输入地址">
+          <div class="city-1d">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="city-1r">
+              <path fill-opacity=".38"
+                    d="M14.778 13.732a.739.739 0 1 1-1.056 1.036l-2.515-2.565a.864.864 0 0 1-.01-1.206 4.894 4.894 0 0 0 1.357-3.651c-.126-2.492-2.156-4.52-4.648-4.647a4.911 4.911 0 0 0-5.16 5.163c.126 2.475 2.13 4.496 4.605 4.642.451.026.896-.008 1.326-.1a.739.739 0 0 1 .308 1.446c-.56.12-1.137.164-1.72.13-3.227-.19-5.83-2.815-5.995-6.042a6.39 6.39 0 0 1 6.71-6.715c3.25.165 5.884 2.8 6.05 6.048a6.37 6.37 0 0 1-1.374 4.3l2.12 2.161z"></path>
+            </svg>
+          </div>
+          <input type="text" v-model="address" placeholder="请输入地址">
         </div>
       </div>
-      <!--<button @click="getStreet()">搜索</button>-->
-      <!--<ul>-->
-      <!--<template v-for="(v,k) in  addressList" v-if="addressList.length!=0 && v.city_id==myCity.id">-->
-      <!--<li>-->
-      <!--&lt;!&ndash;&ndash;&gt;-->
-      <!--<a class="link" @click="setStreet(k)">-->
-      <!--<p style="font-size: 10px">{{v.short_address}}</p>-->
-      <!--<p style="font-size: 10px;color: darkgrey" v-if="v.address.length>20">{{v.address.substring(0,20)}}...-->
-      <!--附近有{{v.count}}家商家 </p>-->
-      <!--<p style="font-size: 10px;color: darkgrey" v-else>{{v.address}} 附近有{{v.count}}家商家 </p>-->
-      <!--</a>-->
-      <!--</li>-->
-      <!--</template>-->
-      <!--</ul>-->
       <div class="ccc">
         <div v-for="(v,k) in  addressList" v-if="addressList.length!=0 && v.city_id==setCity.id" @click="setStreet(k)">
           <mt-cell
@@ -57,6 +50,7 @@
     name: "setStreet",
     data() {
       return {
+        isShow: false,
         address: "",
         addressList: [],
         setCity: []
@@ -118,6 +112,7 @@
        *  因为一个是用户自己规定的城市一个是系统推荐的城市(貌似百度的这个api,GG了?)
        */
       this.setCity = setCity ? setCity : ipCity;
+      this.isShow = true;
       //console.log(this.setCity);
     }
   }
@@ -133,32 +128,57 @@
     //padding 0 20px 0 20px
   }
 
+  .city-1d {
+    position: absolute;
+    left: 70px;
+    top: 17px;
+
+    .city-1r {
+      width: 3.733333vw;
+      height: 3.733333vw;
+
+    }
+  }
+
   .stt {
     position relative
     display flex
-
     width 100%
     height 40px
     .title {
-      padding-top: 8px;
-      padding-left 10px
+      margin-top 5px
+      padding 5px 0 0 10px
       height 24px
       width 15%
-      //font-size: .346667rem;
+      font-size: 12px
       a {
-        text-align center
+        display: flex;
+        margin-top: 7px;
         text-decoration none
         color: #000
       }
     }
     .inputt {
       //padding-left 10px
-      padding-top: 5px;
+      margin 5px 0 5px 0
+      padding-left: 10px;
+      height: 40px;
+      background: #f2f2f2;
       width 75%
       font-size: .346667rem;
       input {
-        width 100%
-        line-height 24px
+        margin: 9px 0 0 10px
+        //padding-right: 5px;
+        display: inline-block;
+        text-align: start;
+        //margin: 0em;
+        border 0
+        line-height 20px
+        outline: none
+        width: 90%;
+        color: #999;
+        background: #f2f2f2;
+        border-radius: .266667vw;
         //▴
       }
     }

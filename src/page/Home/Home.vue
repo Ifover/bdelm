@@ -4,7 +4,17 @@
       <div id="header">
         <mt-header>
           <router-link to='/setStreet' slot="left">
-            <mt-button style="font-size: 17px">📍 {{this.title.name}}▾</mt-button>
+            <mt-button style="font-size: 17px">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 31" class="index-okfdP">
+                <path fill="#FFF" fill-rule="evenodd"
+                      d="M22.116 22.601c-2.329 2.804-7.669 7.827-7.669 7.827-.799.762-2.094.763-2.897-.008 0 0-5.26-4.97-7.643-7.796C1.524 19.8 0 16.89 0 13.194 0 5.908 5.82 0 13 0s13 5.907 13 13.195c0 3.682-1.554 6.602-3.884 9.406zM18 13a5 5 0 1 0-10 0 5 5 0 0 0 10 0z"></path>
+              </svg>
+              <span class="index-2uW">{{this.title.name}}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 8" class="index-2iXz3">
+                <path fill="#FFF" fill-rule="evenodd"
+                      d="M5.588 6.588c.78.78 2.04.784 2.824 0l5.176-5.176c.78-.78.517-1.412-.582-1.412H.994C-.107 0-.372.628.412 1.412l5.176 5.176z"></path>
+              </svg>
+            </mt-button>
           </router-link>
           <!--<mt-button icon="more" slot="right" @click="clear"></mt-button>-->
         </mt-header>
@@ -29,7 +39,7 @@
   import {MessageBox} from 'mint-ui';
   //import {Tabbar, TabItem} from 'mint-ui';
   import FenLei from '@/page/Other/FenLei'
-  import Restaurants from '@/page/Other/Restaurants'
+  import Restaurants from '@/page/Restaurants/Restaurants'
 
   export default {
     name: "home",
@@ -64,6 +74,8 @@
       }
     },
     mounted() {
+      this.$store.state.isShow = ''; //让导航栏显示
+
       let myStreet = getStorage('myStreet');
       if (!myStreet) {
         /**
@@ -88,8 +100,8 @@
          *  就直接渲染内容
          */
         this.title = myStreet;
-        if ( this.title.name.length > 6) {
-          this.title.name =  this.title.name.substring(0, 6) + "...";
+        if (this.title.name.length > 6) {
+          this.title.name = this.title.name.substring(0, 7) + "...";
         }
 
         this.isShow = true;
@@ -111,6 +123,29 @@
 
   #nostreet {
     text-align center
+  }
+
+  .index-2uW {
+    margin: 0 2px
+    font-size: 18px;
+    font-weight bold
+    //max-width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .index-okfdP {
+    //top 2px
+    width: 13px;
+    height: 15px;
+    fill: #fff;
+  }
+
+  .index-2iXz3 {
+    width: 7px;
+    height: 9px;
+    fill: #fff;
   }
 
   #iput {

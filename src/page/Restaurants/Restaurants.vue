@@ -1,24 +1,21 @@
 <template>
   <div id="restaurants">
+    <filters>sd</filters>
     <h1 v-if="!isOk">--未设置地址--</h1>
-
     <section class="shoplist" v-else
              v-infinite-scroll="loadMore"
              infinite-scroll-disabled="loading"
              infinite-scroll-distance="8">
-      <section class="index-container" v-for="v in restaurantsList" v-if="restaurantsList.length>0">
+      <section class="index-container" v-for="(v,vindex) in restaurantsList" v-if="restaurantsList.length>0">
         <div class="index-shopInfo">
           <div class="logo-main">
             <img class="logo-logo"
                  :src="setPic(v.image_path)">
-
-            <!--src="https://fuss10.elemecdn.com/f/4c/7bb04e3e6e2dc22c14eb60cdf2868jpeg.jpeg">-->
-
           </div>
           <div class="index-main">
             <section class="index-line">
               <h3 class="index-shopname">
-                <i content="品牌" class="index-premium">品牌</i>
+                <i content="品牌" class="index-premium" v-if="v.is_premium">品牌</i>
                 <span>{{v.name}}</span>
               </h3>
             </section>
@@ -37,8 +34,8 @@
                 <span class="index-rate">{{v.rating}}</span>
                 <span>月售{{v.recent_order_num}}单</span>
               </div>
-              <div class="delivery">
-              <div content="蜂鸟专送" alt="蜂鸟专送" class="delivery-icon">蜂鸟专送</div>
+              <div class="delivery" v-if="v.delivery_mode">
+                <div content="蜂鸟专送" alt="蜂鸟专送" class="delivery-icon">蜂鸟专送</div>
               </div>
             </section>
             <section class="index-line">
@@ -47,7 +44,7 @@
                 <span>{{v.piecewise_agent_fee.description}}</span>
               </div>
               <div class="index-distanceWrap">
-                <span>1.30km</span>
+                <span>x.xxkm</span>
                 <span>{{v.order_lead_time}}分钟</span>
               </div>
             </section>
@@ -60,38 +57,79 @@
           </span>
           <section class="index-activities">
             <div class="index-activityList">
-              <div class="index-actRow">
-              <span class="index-iconWrap">
-                <span class="index-icon" style="background-color: rgb(112, 188, 70);">首</span>
-              </span>
-                <span class="index-desc">新用户下单立减17元</span>
-              </div>
-              <div class="index-actRow">
-              <span class="index-iconWrap">
-                <span class="index-icon" style="background-color: rgb(240, 115, 115);">减</span>
-              </span>
-                <span class="index-desc">满8减7，满36减20，满50减28</span>
-              </div>
+              <template v-for="(c,d) in v.activities">
+                <div class="index-actRow" v-if="d>1" :style="{display: v.isShowActivitys}">
+                <span class="index-iconWrap">
+                  <span v-if="c.icon_name=='首'" class="index-icon" style="background-color: rgb(112, 188, 70);">首</span>
+                  <span v-else-if="c.icon_name=='减'" class="index-icon"
+                        style="background-color: rgb(240, 115, 115);">减</span>
+                  <span v-else-if="c.icon_name=='折'" class="index-icon"
+                        style="background-color: rgb(241, 136, 79);">折</span>
+                  <span v-else-if="c.icon_name=='特'" class="index-icon"
+                        style="background-color: rgb(241, 136, 79);">特</span>
+                  <span v-else-if="c.icon_name=='换'" class="index-icon"
+                        style="background-color: rgb(241, 136, 79);">换</span>
+                  <span v-else-if="c.icon_name=='赠'" class="index-icon"
+                        style="background-color: rgb(60, 199, 145);">赠</span>
+                  <span v-else-if="c.icon_name=='爆'" class="index-icon"
+                        style="background-color: rgb(240, 115, 115);">爆</span>
+                  <span v-else-if="c.icon_name=='惠'" class="index-icon"
+                        style="background-color: rgb(240, 115, 115);">惠</span>
+                </span>
+                  <span class="index-desc" v-if="c.description.length>18">{{c.description.substring(0,18)}}...</span>
+                  <span class="index-desc" v-else>{{c.description}}</span>
+                </div>
+                <div class="index-actRow" v-else>
+                <span class="index-iconWrap">
+                  <span v-if="c.icon_name=='首'" class="index-icon" style="background-color: rgb(112, 188, 70);">首</span>
+                  <span v-else-if="c.icon_name=='减'" class="index-icon"
+                        style="background-color: rgb(240, 115, 115);">减</span>
+                  <span v-else-if="c.icon_name=='折'" class="index-icon"
+                        style="background-color: rgb(241, 136, 79);">折</span>
+                  <span v-else-if="c.icon_name=='特'" class="index-icon"
+                        style="background-color: rgb(241, 136, 79);">特</span>
+                  <span v-else-if="c.icon_name=='换'" class="index-icon"
+                        style="background-color: rgb(241, 136, 79);">换</span>
+                  <span v-else-if="c.icon_name=='赠'" class="index-icon"
+                        style="background-color: rgb(60, 199, 145);">赠</span>
+                  <span v-else-if="c.icon_name=='爆'" class="index-icon"
+                        style="background-color: rgb(240, 115, 115);">爆</span>
+                  <span v-else-if="c.icon_name=='惠'" class="index-icon"
+                        style="background-color: rgb(240, 115, 115);">惠</span>
+                </span>
+                  <span class="index-desc" v-if="c.description.length>18">{{c.description.substring(0,18)}}...</span>
+                  <span class="index-desc" v-else>{{c.description}}</span>
+                </div>
+              </template>
             </div>
-            <div class="index-activityBtn">
+            <div class="index-activityBtn" v-if="v.activities.length>2" @click="showHideActivity(vindex)">
               <span>{{v.activities.length}}个活动</span>
-              <img
-                src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSIjOTk5IiBkPSJNNC41NzcgNS40MjNjLjc5Ljc3IDIuMDczLjc2NyAyLjg1NyAwbDQuMTItNC4wMjZDMTIuMzQ1LjYyNSAxMi4wOSAwIDEwLjk4NSAwSDEuMDI3Qy0uMDc3IDAtLjMzLjYzLjQ1NyAxLjM5N2w0LjEyIDQuMDI2eiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+"
-                class="index-open"></div>
+              <img :class="{indexOpen:v.isShowActivitys==''}"
+                   src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSIjOTk5IiBkPSJNNC41NzcgNS40MjNjLjc5Ljc3IDIuMDczLjc2NyAyLjg1NyAwbDQuMTItNC4wMjZDMTIuMzQ1LjYyNSAxMi4wOSAwIDEwLjk4NSAwSDEuMDI3Qy0uMDc3IDAtLjMzLjYzLjQ1NyAxLjM5N2w0LjEyIDQuMDI2eiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9zdmc+"
+                   class="index-open">
+            </div>
           </section>
         </div>
         <hr>
       </section>
     </section>
+    <div class="loading">
+      <mt-spinner type="snake"></mt-spinner>
+
+    </div>
   </div>
 </template>
 
 <script>
   import {setStorage, getStorage, removeStorage} from '@/config/Utils.js'
   import {computePic} from '@/config/Tools'
+  import Filters from '@/page/Restaurants/Filters'
 
   export default {
     name: "restaurants",
+    components: {
+      Filters
+    },
     data() {
       return {
         isOk: false,
@@ -102,37 +140,53 @@
       setPic(img) {
         return computePic(img)
       },
-      show() {
-        //console.log(this.$route.params);
+      showHideActivity(index) {
+        //console.log(this.restaurantsList[index]);
+        let temp = this.restaurantsList[index].isShowActivitys;
+        this.restaurantsList[index].isShowActivitys = temp == 'none' ? '' : 'none';
       },
       loadMore() {
-        console.log(this.restaurantsList.length);
-        if (this.restaurantsList.length >= 8) return //测试时使用,屏蔽二次加载
+        /**
+         *   已知问题
+         *  在最低端的时候如果继续下拉似乎会重复加载赵成有重复的店铺显示问题
+         */
+        //console.log(this.restaurantsList.length);
+        //if (this.restaurantsList.length >= 8) return //测试时使用,屏蔽二次加载
         this.loading = true;
-        let tempStreet = getStorage('myStreet');
-        let obj = {
-          url: '/restapi/shopping/v3/restaurants',
-          params: {
-            latitude: tempStreet.latitude,
-            longitude: tempStreet.longitude,
-            offset: this.restaurantsList.length,
-            limit: 8,
-            extras: ['activities'],
-            //geohash: tempStreet.geohash,
-            extra_filters: 'home',
-            rank_id: '190a4531e5d54b809b029549af66a7d1',
-            terminal: 'h5'
+        //let isFirst = this.restaurantsList.length <= 8 ? 0 : 1200;
+        setTimeout(() => {
+          let tempStreet = getStorage('myStreet');
+          let obj = {
+            url: '/restapi/shopping/v3/restaurants',
+            params: {
+              latitude: tempStreet.latitude,
+              longitude: tempStreet.longitude,
+              offset: this.restaurantsList.length,
+              limit: 8,
+              order_by: 0,
+              /**↑↑↑
+               *  排序类型
+               *  [0:综合(默认)]
+               */
+              extras: ['activities'],
+              //geohash: tempStreet.geohash,
+              extra_filters: 'home',
+              rank_id: '190a4531e5d54b809b029549af66a7d1',
+              terminal: 'h5'
+            }
           }
-        }
-        this.$store.dispatch('getAjax', obj).then(response => {
-          console.log(response.data.items);
-          response.data.items.forEach(e => {
-            this.restaurantsList.push(e.restaurant)
-          })
-          //this.restaurantsList.push(response.data);
-          //console.log(response);
-        });
-        this.loading = false;
+          this.$store.dispatch('getAjax', obj).then(response => {
+            //console.log(response.data.items);
+            response.data.items.forEach(e => {
+              e.restaurant.isShowActivitys = 'none';
+              this.restaurantsList.push(e.restaurant);
+            })
+            //this.restaurantsList.push(response.data);
+            //console.log(response);
+          });
+          this.loading = false;
+        }, 100)
+
       }
     },
     mounted() {
@@ -151,12 +205,12 @@
   #restaurants {
     //text-align center
   }
-    hr{
-      opacity: 0.4;
 
-      line-height: 1px;
+  hr {
+    opacity: 0.1;
+    line-height: 1px;
+  }
 
-    }
   .shoplist {
     background-color: #fff;
     .index-container {
@@ -359,6 +413,21 @@
           padding: 0 10px
           color: #999;
           text-align: right;
+          img {
+            position: relative;
+            width: 7px;
+            opacity: .9;
+            margin-left: 3px;
+            transition: all .3s ease-in-out;
+            transform: rotate(0deg);
+            fill: currentColor;
+            will-change: transform;
+            vertical-align: middle;
+            z-index: 1;
+          }
+          .indexOpen {
+            transform rotate(180deg)
+          }
         }
 
       }

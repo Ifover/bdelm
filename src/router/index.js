@@ -18,7 +18,7 @@ import MSite from '@/page/Other/MSite'
 
 //需要改名字
 import FenLei from '@/page/Other/FenLei'
-import Restaurants from '@/page/Other/Restaurants'
+import Restaurants from '@/page/Restaurants/Restaurants'
 import TuiJian from '@/page/Other/TuiJian'
 
 Vue.use(Router)
