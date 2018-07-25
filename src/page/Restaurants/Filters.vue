@@ -52,6 +52,7 @@
         if (!this.isSecond) {
           this.selected = '0'
         }
+        console.log($);
         console.log(this.selected);
       }
     },
