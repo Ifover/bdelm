@@ -15,10 +15,10 @@ npm run dev
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 # 目标功能
-- [ ] 选择城市
-- [ ] 定位城市
-- [ ] 搜索地址
-- [ ] 附近商家
+- [x] 选择城市
+- [x] 定位城市
+- [x] 搜索地址
+- [x] 附近商家
 - [ ] 搜索美食、商家
 - [ ] 根据距离、评分等筛选排序
 - [ ] 购物车
