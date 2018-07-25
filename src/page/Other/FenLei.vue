@@ -75,7 +75,7 @@
     mounted() {
       let ipCity = getStorage('ipCity');
       let setCity = getStorage('setCity');
-      console.log(setCity);
+      //console.log(setCity);
       let finalCity = setCity == null ? ipCity : setCity;
       if (finalCity) {
         let obj = {

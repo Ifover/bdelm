@@ -1,8 +1,10 @@
 <template>
   <div id="restaurants">
-    <filters>sd</filters>
+    <div class="sxsxsx">推荐商家</div>
+    <filters :class="{isindex:isIndex}"></filters>
     <h1 v-if="!isOk">--未设置地址--</h1>
     <section class="shoplist" v-else
+             :class="{cacse:isIndex}"
              v-infinite-scroll="loadMore"
              infinite-scroll-disabled="loading"
              infinite-scroll-distance="8">
@@ -10,7 +12,7 @@
         <div class="index-shopInfo">
           <div class="logo-main">
             <img class="logo-logo"
-                 :src="setPic(v.image_path)">
+                 :src="setPic(v.image_path)+'?imageMogr/format/webp/thumbnail/!130x130r/gravity/Center/crop/130x130/'">
           </div>
           <div class="index-main">
             <section class="index-line">
@@ -133,10 +135,19 @@
     data() {
       return {
         isOk: false,
-        restaurantsList: []
+        isIndex: false,
+        restaurantsList: [],
+        storeMode: 0
       }
     },
     methods: {
+      handleScroll() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+        console.log(scrollTop);
+        this.isIndex = scrollTop >= 260 ? true : false;
+
+      },
+
       setPic(img) {
         return computePic(img)
       },
@@ -163,7 +174,7 @@
               longitude: tempStreet.longitude,
               offset: this.restaurantsList.length,
               limit: 8,
-              order_by: 0,
+              order_by: this.storeMode,
               /**↑↑↑
                *  排序类型
                *  [0:综合(默认)]
@@ -179,7 +190,7 @@
             //console.log(response.data.items);
             response.data.items.forEach(e => {
               e.restaurant.isShowActivitys = 'none';
-              this.restaurantsList.push(e.restaurant);
+              this.restaurantsList.push(e.restaurant); //这里删除测试一下 有机会的话
             })
             //this.restaurantsList.push(response.data);
             //console.log(response);
@@ -190,6 +201,13 @@
       }
     },
     mounted() {
+      //给窗体添加一个滚动的事件句柄 事件具体在上方说明
+      window.addEventListener('scroll', this.handleScroll)
+
+      let storeMode = getStorage('Filters');
+      if (storeMode) {
+        this.storeMode = storeMode.storeMode;
+      }
       this.$store.state.myStreet = getStorage('myStreet');
       let tempStreet = this.$store.state.myStreet
       if (tempStreet) {
@@ -205,10 +223,37 @@
   #restaurants {
     //text-align center
   }
-
+  .cacse {
+    padding-top 46px
+  }
   hr {
     opacity: 0.1;
     line-height: 1px;
+  }
+
+  .sxsxsx {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    font-size: 18px;
+    color: #000;
+  }
+
+  .sxsxsx:after, .sxsxsx:before {
+    display: block;
+    content: "";
+    width 20px
+    height 1px
+    background-color: #999;
+  }
+
+  .sxsxsx:after {
+    margin-left 13px
+  }
+
+  .sxsxsx:before {
+    margin-right 13px
   }
 
   .shoplist {
